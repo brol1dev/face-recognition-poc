@@ -4,6 +4,7 @@ import os
 from deepface import DeepFace
 from werkzeug.utils import secure_filename
 from pprint import pprint
+import base64
 
 app = Flask(__name__)
 
@@ -20,21 +21,18 @@ def compare_images():
         photo = request.files['photo']
         print(id_photo)
         print(photo)
-        id_photo_filename = secure_filename(id_photo.filename)
-        photo_filename = secure_filename(photo.filename)
-        print(id_photo_filename)
-        print(photo_filename)
-        id_photo_path = os.path.join(app.config['IMAGE_UPLOADS'], id_photo_filename)
-        photo_path = os.path.join(app.config['IMAGE_UPLOADS'], photo_filename)
-        print(id_photo_path)
-        print(photo_path)
-        id_photo.save(id_photo_path)
-        photo.save(photo_path)
-        print('saved images')
-        # print('DeepFace verify starting...')
-        # result = DeepFace.verify(id_photo_path, photo_path)
-        # pprint(result)
-        # return render_template('compare-images.html', is_same_face=result['verified'])
+        id_photo_extension = os.path.splitext(id_photo.filename)[1][1:]
+        photo_extension = os.path.splitext(photo.filename)[1][1:]
+        print(id_photo_extension)
+        print(photo_extension)
+        id_photo_data = base64.b64encode(id_photo.read()).decode()
+        id_photo_data = 'data:image/' + id_photo_extension + ';base64,' + id_photo_data
+        photo_data = base64.b64encode(photo.read()).decode()
+        photo_data = 'data:image/' + photo_extension + ';base64,' + photo_data
+        print('DeepFace verify starting...')
+        result = DeepFace.verify(id_photo_data, photo_data)
+        pprint(result)
+        return render_template('compare-images.html', is_same_face=result['verified'])
     
     return render_template('compare-images.html')
 
