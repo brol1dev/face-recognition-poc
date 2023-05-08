@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Is it same face?</title>
+</head>
+<body>
+    <h1>Is it the same face?</h1>
+
+    <form action="/compare-images" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" name="id-photo" id="id-photo" accept="image/*"/>
+          <label for="id-photo" class="custom-file-label">Select ID photo</label>
+        </div>
+
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" name="photo" id="photo" accept="image/*"/>
+          <label for="photo" class="custom-file-label">Select a face photo</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Upload and verify</button>
+    </form>
+</body>
+</html>
