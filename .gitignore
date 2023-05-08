@@ -2,7 +2,8 @@
 *.log
 *.pyc
 __pycache__
-uploads/
+uploads/*
+!uploads/images_uploaded_here.txt
 
 # Environments 
 .env 
