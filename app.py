@@ -25,8 +25,8 @@ def main():
         data2 = asarray(image2)
         result = DeepFace.verify(data1, data2)
         if (result['verified']):
-            st.success('It is the same person')
+            st.success('✅ It is the same person 😀 👍')
         else:
-            st.error('It is not the same person')
+            st.error('❌ It is not the same person 🙁')
 
 main()
