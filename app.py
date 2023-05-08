@@ -18,12 +18,19 @@ def compare_images():
     if request.files:
         id_photo = request.files['id-photo']
         photo = request.files['photo']
+        print(id_photo)
+        print(photo)
         id_photo_filename = secure_filename(id_photo.filename)
         photo_filename = secure_filename(photo.filename)
+        print(id_photo_filename)
+        print(photo_filename)
         id_photo_path = os.path.join(app.config['IMAGE_UPLOADS'], id_photo_filename)
         photo_path = os.path.join(app.config['IMAGE_UPLOADS'], photo_filename)
+        print(id_photo_path)
+        print(photo_path)
         id_photo.save(id_photo_path)
         photo.save(photo_path)
+        print('DeepFace verify starting...')
         result = DeepFace.verify(id_photo_path, photo_path)
         pprint(result)
         return render_template('compare-images.html', is_same_face=result['verified'])
