@@ -1,39 +1,32 @@
-from flask import Flask, render_template, request
-from pathlib import Path
-import os
+import streamlit as st
+from PIL import Image
+from numpy import asarray
 from deepface import DeepFace
-from pprint import pprint
-import base64
 
-app = Flask(__name__)
+st.title('Is it the same face?')
 
-app.config['IMAGE_UPLOADS'] =  str(Path(__file__).parent / 'uploads')
+def main():
+    column1, column2 = st.columns(2)  
+    with column1:
+        image1 = st.file_uploader("Select Photo ID", type=["jpg","png"])
+        
+    with column2:
+        image2 = st.file_uploader("Select Selfie", type=["jpg","png"])
+    if (image1 is not None) & (image2  is not None):
+        col1, col2 = st.columns(2)
+        image1 =  Image.open(image1)
+        image2 =  Image.open(image2)
+        with col1:
+            st.image(image1)
+        with col2:
+            st.image(image2)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+        data1 = asarray(image1)
+        data2 = asarray(image2)
+        result = DeepFace.verify(data1, data2)
+        if (result['verified']):
+            st.success('It is the same person')
+        else:
+            st.error('It is not the same person')
 
-@app.route('/compare-images', methods=['GET', 'POST'])
-def compare_images():
-    if request.files:
-        id_photo = request.files['id-photo']
-        photo = request.files['photo']
-        print(id_photo)
-        print(photo)
-        id_photo_extension = os.path.splitext(id_photo.filename)[1][1:]
-        photo_extension = os.path.splitext(photo.filename)[1][1:]
-        print(id_photo_extension)
-        print(photo_extension)
-        id_photo_data = base64.b64encode(id_photo.read()).decode()
-        id_photo_data = 'data:image/' + id_photo_extension + ';base64,' + id_photo_data
-        photo_data = base64.b64encode(photo.read()).decode()
-        photo_data = 'data:image/' + photo_extension + ';base64,' + photo_data
-        print('DeepFace verify starting...')
-        result = DeepFace.verify(id_photo_data, photo_data)
-        pprint(result)
-        return render_template('compare-images.html', is_same_face=result['verified'])
-    
-    return render_template('compare-images.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+main()
